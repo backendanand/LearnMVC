@@ -1,0 +1,34 @@
+﻿@model RegisterVM
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h5>Register Page</h5>
+
+
+@* <form method="post" action="@postUrl"> *@
+<form method="post" asp-controller="Auth" asp-action="Register">
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <div class="form-group mb-3">
+        <input class="form-control" asp-for="Name"/>
+        <span class="text-danger text-sm-start" asp-validation-for="Name"></span>
+    </div>
+    <div class="form-group mb-3">
+        <select class="form-select" asp-for="Role">
+            <option value="">Select</option>
+            <option value="Admin">Admin</option>
+            <option value="User">User</option>
+        </select>
+        <span class="text-danger text-sm-start" asp-validation-for="Role"></span>
+    </div>
+    <div class="form-group mb-3">
+        <input class="form-control" type="password" asp-for="Password" />
+        <span class="text-danger text-sm-start" asp-validation-for="Password"></span>
+    </div>
+    <div class="form-group mb-3">
+        <button type="reset" class="btn btn-secondary">Reset</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>
