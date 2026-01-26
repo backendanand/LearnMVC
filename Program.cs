@@ -1,10 +1,16 @@
 using LearnMVC.Data;
+using LearnMVC.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSession();
 builder.Services.AddTransient<DapperContext>();
+
+builder.Services.AddScoped<IAuthContextService, AuthContextService>();
+
 
 var app = builder.Build();
 
@@ -21,6 +27,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseSession();
+//app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

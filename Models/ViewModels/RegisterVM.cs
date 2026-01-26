@@ -8,6 +8,14 @@ namespace LearnMVC.Models.ViewModels
         [MaxLength(20, ErrorMessage = "Name cannot exceed 20 characters")]
         public string Name { get; set; }
 
+        [Required(ErrorMessage = "Username is required")]
+        [MaxLength(20, ErrorMessage = "Username cannot exceed 20 characters")]
+        public string Username { get; set; }
+
+        [Required(ErrorMessage = "Mobile number is required")]
+        [MaxLength(10, ErrorMessage = "Mobile number cannot exceed 10 characters")]
+        public string Mobile { get; set; }
+
         [Required(ErrorMessage = "Role is required")]
         [MaxLength(20, ErrorMessage = "Role cannot exceed 20 characters")]
         public string Role { get; set; }

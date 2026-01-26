@@ -1,19 +1,29 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using LearnMVC.Models;
+﻿using Dapper;
 using LearnMVC.Data;
+using LearnMVC.Models;
+using LearnMVC.Models.ServiceModels;
 using LearnMVC.Models.ViewModels;
-using Dapper;
-using System.Threading.Tasks;
+using LearnMVC.Services;
+using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace LearnMVC.Controllers
 {
     public class AuthController : Controller
     {
         private readonly DapperContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IAuthContextService _authContextService;
 
-        public AuthController(DapperContext context)
+        public AuthController(
+            DapperContext context,
+            IHttpContextAccessor httpContextAccessor,
+            IAuthContextService authContextService
+            )
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
+            _authContextService = authContextService;
         }
 
         public IActionResult Login()
@@ -32,7 +42,7 @@ namespace LearnMVC.Controllers
 
             using (var connection = _context.CreateConnection())
             {
-                string selectQuery = "SELECT * FROM users WHERE name=@Username ORDER BY id ASC LIMIT 1";
+                string selectQuery = "SELECT * FROM users WHERE username=@Username ORDER BY id ASC LIMIT 1";
 
                 var parameter = new DynamicParameters();
                 parameter.Add("Username", model.Username);
@@ -54,9 +64,16 @@ namespace LearnMVC.Controllers
                 }
 
                 // Authentication successful
-                TempData["SuccessMessage"] = "Login successful!";
-                return RedirectToAction("Index", "Home");
+                var isAuthenticated = _authContextService.SetSession(user);
 
+                if(isAuthenticated == false)
+                {
+                    ModelState.AddModelError("", "Authentication failed. Please try again.");
+                    return View(model);
+                }
+
+                ModelState.AddModelError("", "Login Successful.");
+                return View(model);
             }
 
         }
@@ -79,13 +96,17 @@ namespace LearnMVC.Controllers
 
             using (var connection = _context.CreateConnection())
             {
-                string insertQuery = "INSERT INTO users (name, role, password, created_at) VALUES (@Name, @Role, @Password, @CreatedAt)";
+                string insertQuery = "INSERT INTO users (name, username, mobile, role, password, created_at, created_by, created_ip) VALUES (@Name, @Username, @Mobile, @Role, @Password, @CreatedAt, @CreatedBy, @CreatedIp)";
 
                 var parameter = new DynamicParameters();
                 parameter.Add("Name", model.Name);
+                parameter.Add("Username", model.Username);
+                parameter.Add("Mobile", model.Mobile);
                 parameter.Add("Role", model.Role);
                 parameter.Add("Password", hashedPassword);
                 parameter.Add("CreatedAt", DateTime.Now);
+                parameter.Add("CreatedBy", -1);
+                parameter.Add("CreatedIp", _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString());
 
                 var executed = await connection.ExecuteAsync(insertQuery, parameter);
 

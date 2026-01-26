@@ -12,10 +12,22 @@
     <div asp-validation-summary="ModelOnly"></div>
 
     <div class="form-group mb-3">
+        <label asp-for="Name" class="form-label"></label>
         <input class="form-control" asp-for="Name"/>
         <span class="text-danger text-sm-start" asp-validation-for="Name"></span>
     </div>
     <div class="form-group mb-3">
+        <label asp-for="Username" class="form-label"></label>
+        <input class="form-control" asp-for="Username"/>
+        <span class="text-danger text-sm-start" asp-validation-for="Username"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="Mobile" class="form-label"></label>
+        <input class="form-control" asp-for="Mobile" />
+        <span class="text-danger text-sm-start" asp-validation-for="Mobile"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="Role" class="form-label"></label>
         <select class="form-select" asp-for="Role">
             <option value="">Select</option>
             <option value="Admin">Admin</option>
@@ -24,6 +36,7 @@
         <span class="text-danger text-sm-start" asp-validation-for="Role"></span>
     </div>
     <div class="form-group mb-3">
+        <label asp-for="Password" class="form-label"></label>
         <input class="form-control" type="password" asp-for="Password" />
         <span class="text-danger text-sm-start" asp-validation-for="Password"></span>
     </div>
@@ -32,3 +45,7 @@
         <button type="submit" class="btn btn-primary">Submit</button>
     </div>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
