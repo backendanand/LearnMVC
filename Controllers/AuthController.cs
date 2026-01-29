@@ -74,6 +74,12 @@ namespace LearnMVC.Controllers
                         return View(model);
                     }
 
+                    if(user.role.ToUpper() == "ADMIN")
+                    {
+                        TempData["SuccessMessage"] = "Admin Login successful.";
+                        return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+                    }
+
                     TempData["SuccessMessage"] = "Login successful.";
                     return RedirectToAction("Index", "Home");
                 }
