@@ -34,48 +34,55 @@ namespace LearnMVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginVM model)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                ModelState.AddModelError("", "Please correct the errors and try again.");
+                if (!ModelState.IsValid)
+                {
+                    ModelState.AddModelError("", "Please correct the errors and try again.");
+                    return View(model);
+                }
+
+                using (var connection = _context.CreateConnection())
+                {
+                    string selectQuery = "SELECT * FROM users WHERE username=@Username ORDER BY id ASC LIMIT 1";
+
+                    var parameter = new DynamicParameters();
+                    parameter.Add("Username", model.Username);
+
+                    var user = await connection.QueryFirstOrDefaultAsync<User>(selectQuery, parameter);
+
+                    if (user == null)
+                    {
+                        ModelState.AddModelError("", "Invalid credentials.");
+                        return View(model);
+                    }
+
+                    bool isPasswordValid = BCrypt.Net.BCrypt.Verify(model.Password, user.password);
+
+                    if (!isPasswordValid)
+                    {
+                        ModelState.AddModelError("", "Invalid credentials.");
+                        return View(model);
+                    }
+
+                    // Authentication successful
+                    var isAuthenticated = _authContextService.SetSession(user);
+
+                    if (isAuthenticated == false)
+                    {
+                        ModelState.AddModelError("", "Authentication failed. Please try again.");
+                        return View(model);
+                    }
+
+                    TempData["SuccessMessage"] = "Login successful.";
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
                 return View(model);
             }
-
-            using (var connection = _context.CreateConnection())
-            {
-                string selectQuery = "SELECT * FROM users WHERE username=@Username ORDER BY id ASC LIMIT 1";
-
-                var parameter = new DynamicParameters();
-                parameter.Add("Username", model.Username);
-
-                var user = await connection.QueryFirstOrDefaultAsync<User>(selectQuery, parameter);
-
-                if (user == null)
-                {
-                    ModelState.AddModelError("", "Invalid credentials.");
-                    return View(model);
-                }
-
-                bool isPasswordValid = BCrypt.Net.BCrypt.Verify(model.Password, user.password);
-
-                if (!isPasswordValid)
-                {
-                    ModelState.AddModelError("", "Invalid credentials.");
-                    return View(model);
-                }
-
-                // Authentication successful
-                var isAuthenticated = _authContextService.SetSession(user);
-
-                if(isAuthenticated == false)
-                {
-                    ModelState.AddModelError("", "Authentication failed. Please try again.");
-                    return View(model);
-                }
-
-                ModelState.AddModelError("", "Login Successful.");
-                return View(model);
-            }
-
         }
 
         public IActionResult Register()
@@ -110,7 +117,7 @@ namespace LearnMVC.Controllers
 
                 var executed = await connection.ExecuteAsync(insertQuery, parameter);
 
-                if(executed > 0)
+                if (executed > 0)
                 {
                     TempData["SuccessMessage"] = "Registration successful! Please log in.";
                     return RedirectToAction(nameof(Login));
