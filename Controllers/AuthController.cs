@@ -81,7 +81,7 @@ namespace LearnMVC.Controllers
                     }
 
                     TempData["SuccessMessage"] = "Login successful.";
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Profile");
                 }
             }
             catch (Exception ex)
@@ -136,6 +136,31 @@ namespace LearnMVC.Controllers
 
 
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            try
+            {
+                var loggedOut = _authContextService.ClearSession();
+
+                if (loggedOut)
+                {
+                    TempData["SuccessMessage"] = "Logout successful";
+                    return RedirectToAction(nameof(Login));
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Failed to logout";
+                    return RedirectToAction(nameof(Login));
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction(nameof(Login));
+            }
         }
     }
 }

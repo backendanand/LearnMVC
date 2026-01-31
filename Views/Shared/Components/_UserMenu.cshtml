@@ -1,0 +1,70 @@
+﻿@using LearnMVC.Services
+@inject IAuthContextService authContext
+
+@{
+    var currentSession = authContext.GetSession();
+    bool isAuthenticated = false;
+
+    if(currentSession != null)
+    {
+        isAuthenticated = true;
+    }
+}
+
+@if (isAuthenticated)
+{
+    @Html.Partial("Components/_LogoutForm")
+
+    <div class="dropdown">
+        <a class="d-flex align-items-center text-decoration-none dropdown-toggle"
+           href="#"
+           id="userMenu"
+           data-bs-toggle="dropdown"
+           aria-expanded="false">
+            <img src="~/img/user-icon.png"
+                 alt="User"
+                 class="rounded-circle me-2"
+                 width="32"
+                 height="32" />
+            <span class="fw-semibold">@(currentSession.Name ?? "Anonymous")</span>
+        </a>
+
+        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenu">
+
+            @if(currentSession.Role.ToUpper() == "USER")
+            {
+                <li>
+                    <a class="dropdown-item" href="/profile">
+                        <i class="bi bi-person me-2"></i> Profile
+                    </a>
+                </li>
+            }
+
+            @if (currentSession.Role.ToUpper() == "ADMIN")
+            {
+                <li>
+                    <a class="dropdown-item" href="/dashboard">
+                        <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                    </a>
+                </li>
+            }
+            
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <a class="dropdown-item text-danger" href="#" onclick="document.getElementById('logoutForm').submit()">
+                    <i class="bi bi-box-arrow-right me-2"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+}
+else
+{
+    <a class="btn btn-sm btn-outline-primary"
+       asp-controller="Auth"
+       asp-action="Login">Login</a>
+    <a class="btn btn-sm btn-outline-secondary"
+       asp-controller="Auth"
+       asp-action="Register">Register</a>
+}
+
