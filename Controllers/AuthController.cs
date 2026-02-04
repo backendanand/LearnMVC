@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using LearnMVC.Data;
-using LearnMVC.Models;
+using LearnMVC.Models.DomainModels;
 using LearnMVC.Models.ServiceModels;
 using LearnMVC.Models.ViewModels;
 using LearnMVC.Services;

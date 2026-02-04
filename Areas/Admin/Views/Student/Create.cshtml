@@ -1,0 +1,138 @@
+﻿@model StudentVM
+
+@{
+    ViewData["Title"] = "Student Registration";
+}
+
+<h2 class="mb-4">Student Registration Form</h2>
+
+<form asp-area="Admin" asp-controller="Student" asp-action="Create" method="post" enctype="multipart/form-data" class="row g-3">
+
+    <!-- Hidden field -->
+    <input type="hidden" asp-for="Id" />
+
+    <!-- First Name -->
+    <div class="col-md-6">
+        <label asp-for="FirstName" class="form-label"></label>
+        <input asp-for="FirstName" class="form-control" />
+        <span asp-validation-for="FirstName" class="text-danger"></span>
+    </div>
+
+    <!-- Middle Name -->
+    <div class="col-md-6">
+        <label asp-for="MiddleName" class="form-label"></label>
+        <input asp-for="MiddleName" class="form-control" />
+        <span asp-validation-for="MiddleName" class="text-danger"></span>
+    </div>
+
+    <!-- Last Name -->
+    <div class="col-md-6">
+        <label asp-for="LastName" class="form-label"></label>
+        <input asp-for="LastName" class="form-control" />
+    </div>
+
+    <!-- Email -->
+    <div class="col-md-6">
+        <label asp-for="Email" class="form-label"></label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+
+    <!-- Password -->
+    <div class="col-md-6">
+        <label asp-for="Password" class="form-label"></label>
+        <input asp-for="Password" class="form-control" />
+    </div>
+
+    <!-- Phone -->
+    <div class="col-md-6">
+        <label asp-for="Phone" class="form-label"></label>
+        <input asp-for="Phone" class="form-control" />
+    </div>
+
+    <!-- Age -->
+    <div class="col-md-3">
+        <label asp-for="Age" class="form-label"></label>
+        <input asp-for="Age" class="form-control" />
+    </div>
+
+    <!-- Date of Birth -->
+    <div class="col-md-3">
+        <label asp-for="DateOfBirth" class="form-label"></label>
+        <input asp-for="DateOfBirth" class="form-control" />
+    </div>
+
+    <!-- Gender (Radio buttons) -->
+    <div class="col-md-6">
+        <label class="form-label d-block">Gender</label>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" asp-for="Gender" value="Male" />
+            <label class="form-check-label">Male</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" asp-for="Gender" value="Female" />
+            <label class="form-check-label">Female</label>
+        </div>
+    </div>
+
+    <!-- Active Checkbox -->
+    <div class="col-md-6">
+        <div class="form-check mt-4">
+            <input asp-for="IsActive" class="form-check-input" />
+            <label asp-for="IsActive" class="form-check-label"></label>
+        </div>
+    </div>
+
+    <!-- Hobbies (Checkbox list) -->
+    <div class="col-md-6">
+        <label class="form-label d-block">Hobbies</label>
+        <div class="form-check">
+            <input type="checkbox" name="Hobbies" value="Reading" class="form-check-input" />
+            <label class="form-check-label">Reading</label>
+        </div>
+        <div class="form-check">
+            <input type="checkbox" name="Hobbies" value="Sports" class="form-check-input" />
+            <label class="form-check-label">Sports</label>
+        </div>
+        <div class="form-check">
+            <input type="checkbox" name="Hobbies" value="Music" class="form-check-input" />
+            <label class="form-check-label">Music</label>
+        </div>
+    </div>
+
+    <!-- Course Dropdown -->
+    <div class="col-md-6">
+        <label asp-for="Course" class="form-label"></label>
+        <select asp-for="Course" asp-items="ViewBag.Courses" class="form-select">
+            <option value="">-- Select Course --</option>
+        </select>
+    </div>
+
+    <!-- Skills Multi-select -->
+    <div class="col-md-6">
+        <label asp-for="Skills" class="form-label">Skills</label>
+        <select asp-for="Skills" asp-items="ViewBag.Skills" class="form-select" multiple></select>
+    </div>
+
+    <!-- Address (Textarea) -->
+    <div class="col-12">
+        <label asp-for="Address" class="form-label"></label>
+        <textarea asp-for="Address" class="form-control" rows="3"></textarea>
+    </div>
+
+    <!-- Profile Image Upload -->
+    <div class="col-md-6">
+        <label asp-for="ProfileImage" class="form-label">Profile Image</label>
+        <input asp-for="ProfileImage" type="file" class="form-control" />
+    </div>
+
+    <!-- Buttons -->
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Register</button>
+        <button type="reset" class="btn btn-secondary">Reset</button>
+    </div>
+
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

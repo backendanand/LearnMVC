@@ -1,4 +1,4 @@
-﻿using LearnMVC.Models;
+﻿using LearnMVC.Models.DomainModels;
 using LearnMVC.Models.ServiceModels;
 using System.Text.Json;
 

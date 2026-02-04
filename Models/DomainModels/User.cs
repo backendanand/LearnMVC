@@ -1,4 +1,4 @@
-﻿namespace LearnMVC.Models
+﻿namespace LearnMVC.Models.DomainModels
 {
     public class User : BaseEntity
     {
