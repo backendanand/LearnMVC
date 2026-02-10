@@ -16,7 +16,7 @@
         public string course { get; set; }
         public List<string> skills { get; set; }
         public string address { get; set; }
-        public IFormFile profile_image { get; set; }
+        public string? profile_image { get; set; }
     }
 
 }

@@ -8,6 +8,8 @@
 
 <form asp-area="Admin" asp-controller="Student" asp-action="Create" method="post" enctype="multipart/form-data" class="row g-3">
 
+    <div asp-validation-summary="ModelOnly"></div>
+
     <!-- Hidden field -->
     <input type="hidden" asp-for="Id" />
 
@@ -29,36 +31,42 @@
     <div class="col-md-6">
         <label asp-for="LastName" class="form-label"></label>
         <input asp-for="LastName" class="form-control" />
+        <span asp-validation-for="LastName" class="text-danger"></span>
     </div>
 
     <!-- Email -->
     <div class="col-md-6">
         <label asp-for="Email" class="form-label"></label>
         <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
     </div>
 
     <!-- Password -->
     <div class="col-md-6">
         <label asp-for="Password" class="form-label"></label>
         <input asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
     </div>
 
     <!-- Phone -->
     <div class="col-md-6">
         <label asp-for="Phone" class="form-label"></label>
         <input asp-for="Phone" class="form-control" />
+        <span asp-validation-for="Phone" class="text-danger"></span>
     </div>
 
     <!-- Age -->
     <div class="col-md-3">
         <label asp-for="Age" class="form-label"></label>
         <input asp-for="Age" class="form-control" />
+        <span asp-validation-for="Age" class="text-danger"></span>
     </div>
 
     <!-- Date of Birth -->
     <div class="col-md-3">
         <label asp-for="DateOfBirth" class="form-label"></label>
         <input asp-for="DateOfBirth" class="form-control" />
+        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
     </div>
 
     <!-- Gender (Radio buttons) -->
@@ -72,6 +80,7 @@
             <input class="form-check-input" type="radio" asp-for="Gender" value="Female" />
             <label class="form-check-label">Female</label>
         </div>
+        <span asp-validation-for="Gender" class="text-danger"></span>
     </div>
 
     <!-- Active Checkbox -->
@@ -80,6 +89,7 @@
             <input asp-for="IsActive" class="form-check-input" />
             <label asp-for="IsActive" class="form-check-label"></label>
         </div>
+        <span asp-validation-for="IsActive" class="text-danger"></span>
     </div>
 
     <!-- Hobbies (Checkbox list) -->
@@ -97,6 +107,7 @@
             <input type="checkbox" name="Hobbies" value="Music" class="form-check-input" />
             <label class="form-check-label">Music</label>
         </div>
+        <span asp-validation-for="Hobbies" class="text-danger"></span>
     </div>
 
     <!-- Course Dropdown -->
@@ -104,25 +115,34 @@
         <label asp-for="Course" class="form-label"></label>
         <select asp-for="Course" asp-items="ViewBag.Courses" class="form-select">
             <option value="">-- Select Course --</option>
+            <option value="DotNet">ASP.NET Core MVC</option>
         </select>
+        <span asp-validation-for="Course" class="text-danger"></span>
     </div>
 
     <!-- Skills Multi-select -->
     <div class="col-md-6">
         <label asp-for="Skills" class="form-label">Skills</label>
-        <select asp-for="Skills" asp-items="ViewBag.Skills" class="form-select" multiple></select>
+        <select asp-for="Skills" asp-items="ViewBag.Skills" class="form-select" multiple>
+            <option value="CSharp">C#</option>
+            <option value="JavaScript">JavaScript</option>
+            <option value="SQL">SQL</option>
+        </select>
+        <span asp-validation-for="Skills" class="text-danger"></span>
     </div>
 
     <!-- Address (Textarea) -->
     <div class="col-12">
         <label asp-for="Address" class="form-label"></label>
         <textarea asp-for="Address" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Address" class="text-danger"></span>
     </div>
 
     <!-- Profile Image Upload -->
     <div class="col-md-6">
         <label asp-for="ProfileImage" class="form-label">Profile Image</label>
         <input asp-for="ProfileImage" type="file" class="form-control" />
+        <span asp-validation-for="ProfileImage" class="text-danger"></span>
     </div>
 
     <!-- Buttons -->

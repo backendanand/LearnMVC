@@ -1,4 +1,5 @@
 using LearnMVC.Data;
+using LearnMVC.Repositories;
 using LearnMVC.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,7 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession();
+
 builder.Services.AddTransient<DapperContext>();
+builder.Services.AddScoped<IGenericRepository, GenericRepository>();
 
 builder.Services.AddScoped<IAuthContextService, AuthContextService>();
 

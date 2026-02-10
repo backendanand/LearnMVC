@@ -20,6 +20,7 @@ namespace LearnMVC.Services
                 var session = new AuthSession
                 {
                     SessionId = Guid.NewGuid(),
+                    UserId = user.id,
                     Name = user.name,
                     Username = user.username,
                     Role = user.role
