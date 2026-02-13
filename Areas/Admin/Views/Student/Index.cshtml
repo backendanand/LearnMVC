@@ -1,5 +1,78 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<StudentListVM>
+
 @{
+    ViewData["Title"] = "Students";
 }
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Student List</h3>
+        <a asp-action="Create" class="btn btn-primary">Add Student</a>
+    </div>
+
+    <table class="table table-bordered table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Age</th>
+                <th>Course</th>
+                <th>Status</th>
+                <th width="150">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var student in Model)
+                {
+                    <tr>
+                        <td>
+                            @student.first_name @student.middle_name @student.last_name
+                        </td>
+                        <td>@student.email</td>
+                        <td>@student.phone</td>
+                        <td>@student.age</td>
+                        <td>@student.course</td>
+                        <td>
+                            @if (student.is_active)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Inactive</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="Edit"
+                               asp-route-id="@student.id"
+                               class="btn btn-sm btn-warning">
+                                Edit
+                            </a>
+
+                            <a asp-action="Details"
+                               asp-route-id="@student.id"
+                               class="btn btn-sm btn-info">
+                                View
+                            </a>
+
+                            <a asp-action="Delete"
+                               asp-route-id="@student.id"
+                               class="btn btn-sm btn-danger">
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7" class="text-center">No students found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

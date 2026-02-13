@@ -1,5 +1,6 @@
 ﻿using LearnMVC.Filters.Attributes;
 using LearnMVC.Models.DomainModels;
+using LearnMVC.Models.DTOs;
 using LearnMVC.Models.ViewModels;
 using LearnMVC.Repositories;
 using LearnMVC.Services;
@@ -21,9 +22,15 @@ namespace LearnMVC.Areas.Admin.Controllers
             _authContextService = authContextService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var students = await _genericRepository.GetAsync<StudentListVM>(options: new QueryOptions
+            {
+                SelectColumns = new List<string> { "id", "first_name", "middle_name", "last_name", "email", "phone", "age", "course", "is_active" },
+                Table = "students",
+                Sorts = new List<QuerySort> { new () { Column = "created_at", Descending = true } }
+            });
+            return View(students);
         }
 
         public IActionResult Create()
@@ -32,7 +39,7 @@ namespace LearnMVC.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(StudentVM model)
+        public async Task<IActionResult> Create(StudentCreateVM model)
         {
             try
             {

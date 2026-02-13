@@ -2,7 +2,20 @@
 
 namespace LearnMVC.Models.ViewModels
 {
-    public class StudentVM
+    public class StudentListVM
+    {
+        public long id { get; set; }
+        public string first_name { get; set; }
+        public string middle_name { get; set; }
+        public string last_name { get; set; }
+        public string email { get; set; }
+        public string phone { get; set; }
+        public int age { get; set; }
+        public string course { get; set; }
+        public bool is_active { get; set; }
+    }
+
+    public class StudentCreateVM
     {
         public long Id { get; set; } = 0;
 
@@ -22,7 +35,7 @@ namespace LearnMVC.Models.ViewModels
         [Range(1, 100)]
         public int Age { get; set; }
         [DataType(DataType.Date)]
-        public DateTime DateOfBirth { get; set; }
+        public DateOnly DateOfBirth { get; set; }
         public string Gender { get; set; }
         public bool IsActive { get; set; }
         public List<string> Hobbies { get; set; } = new();

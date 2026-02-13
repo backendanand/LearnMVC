@@ -1,4 +1,6 @@
+using Dapper;
 using LearnMVC.Data;
+using LearnMVC.Handlers;
 using LearnMVC.Repositories;
 using LearnMVC.Services;
 
@@ -11,6 +13,9 @@ builder.Services.AddSession();
 
 builder.Services.AddTransient<DapperContext>();
 builder.Services.AddScoped<IGenericRepository, GenericRepository>();
+
+SqlMapper.AddTypeHandler(new DateOnlyTypeHandler());
+SqlMapper.AddTypeHandler(new NullableDateOnlyTypeHandler());
 
 builder.Services.AddScoped<IAuthContextService, AuthContextService>();
 

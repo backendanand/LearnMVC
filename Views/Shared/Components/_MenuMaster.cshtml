@@ -1,0 +1,25 @@
+﻿@using LearnMVC.Services
+@inject IAuthContextService authContext
+
+@{
+    var currentSession = authContext.GetSession();
+    bool isAuthenticated = false;
+
+    if (currentSession != null)
+    {
+        isAuthenticated = true;
+    }
+}
+
+@if (isAuthenticated == true)
+{
+    @if(currentSession.Role.ToUpper() == "ADMIN")
+    {
+        @Html.Partial("Components/_AdminMenu")
+    }
+
+    @if (currentSession.Role.ToUpper() == "STUDENT")
+    {
+        @Html.Partial("Components/_StudentMenu")
+    }
+}
