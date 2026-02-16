@@ -6,7 +6,7 @@
 
 <h2 class="mb-4">Student Registration Form</h2>
 
-<form asp-area="Admin" asp-controller="Student" asp-action="Create" method="post" enctype="multipart/form-data" class="row g-3">
+<form asp-area="Admin" asp-controller="Student" asp-action="Save" method="post" enctype="multipart/form-data" class="row g-3">
 
     <div asp-validation-summary="ModelOnly"></div>
 
@@ -95,18 +95,34 @@
     <!-- Hobbies (Checkbox list) -->
     <div class="col-md-6">
         <label class="form-label d-block">Hobbies</label>
+
         <div class="form-check">
-            <input type="checkbox" name="Hobbies" value="Reading" class="form-check-input" />
+            <input type="checkbox"
+                   name="Hobbies"
+                   value="Reading"
+                   class="form-check-input"
+                   @(Model.Hobbies != null && Model.Hobbies.Contains("Reading") ? "checked" : "") />
             <label class="form-check-label">Reading</label>
         </div>
+
         <div class="form-check">
-            <input type="checkbox" name="Hobbies" value="Sports" class="form-check-input" />
+            <input type="checkbox"
+                   name="Hobbies"
+                   value="Sports"
+                   class="form-check-input"
+                   @(Model.Hobbies != null && Model.Hobbies.Contains("Sports") ? "checked" : "") />
             <label class="form-check-label">Sports</label>
         </div>
+
         <div class="form-check">
-            <input type="checkbox" name="Hobbies" value="Music" class="form-check-input" />
+            <input type="checkbox"
+                   name="Hobbies"
+                   value="Music"
+                   class="form-check-input"
+                   @(Model.Hobbies != null && Model.Hobbies.Contains("Music") ? "checked" : "") />
             <label class="form-check-label">Music</label>
         </div>
+
         <span asp-validation-for="Hobbies" class="text-danger"></span>
     </div>
 
@@ -147,7 +163,9 @@
 
     <!-- Buttons -->
     <div class="col-12">
-        <button type="submit" class="btn btn-primary">Register</button>
+        <button type="submit" class="btn btn-primary">
+            @(Model.Id > 0 ? "Update" : "Register")
+            </button>
         <button type="reset" class="btn btn-secondary">Reset</button>
     </div>
 

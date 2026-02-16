@@ -11,6 +11,7 @@ namespace LearnMVC.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [RoleAuthorize(["Admin"])]
+    [Route("admin")]
     public class StudentController : Controller
     {
         private readonly IGenericRepository _genericRepository;
@@ -22,6 +23,7 @@ namespace LearnMVC.Areas.Admin.Controllers
             _authContextService = authContextService;
         }
 
+        [Route("students")]
         public async Task<IActionResult> Index()
         {
             var students = await _genericRepository.GetAsync<StudentListVM>(options: new QueryOptions
@@ -33,22 +35,72 @@ namespace LearnMVC.Areas.Admin.Controllers
             return View(students);
         }
 
+        [HttpGet("students/create")]
         public IActionResult Create()
         {
-            return View();
+            var viewModel = new StudentCreateVM();
+            return View(viewModel);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create(StudentCreateVM model)
+        [HttpGet("students/edit/{id}")]
+        public async Task<IActionResult> Edit(long id)
         {
             try
             {
-                if(model.Id == 0)
+                if(id <= 0)
+                {
+                    TempData["ErrorMessage"] = "Invalid student ID.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                var student = await _genericRepository.GetByIdAsync<Student>("students", "id", id);
+                if (student == null)
+                {
+                    TempData["ErrorMessage"] = "Student not found.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                var viewModel = new StudentCreateVM
+                {
+                    Id = student.id,
+                    FirstName = student.first_name,
+                    MiddleName = student.middle_name,
+                    LastName = student.last_name,
+                    Email = student.email,
+                    Password = student.password,
+                    Phone = student.phone,
+                    Age = student.age,
+                    DateOfBirth = student.date_of_birth,
+                    Gender = student.gender,
+                    IsActive = student.is_active,
+                    Hobbies = student.hobbies,
+                    Course = student.course,
+                    Skills = student.skills,
+                    Address = student.address,
+                    ProfileImage = null, // File upload will be handled separately in the view
+                    ProfileImageUrl = student.profile_image
+                };
+
+                return View("Create", viewModel);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        [HttpPost("students/save")]
+        public async Task<IActionResult> Save(StudentCreateVM model)
+        {
+            try
+            {
+                if (model.Id == 0)
                 {
                     ModelState.Remove("Id");
                 }
 
-                if(!ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
                     TempData["ErrorMessage"] = "Please fill all the required fields.";
                     return View(model);
@@ -64,10 +116,10 @@ namespace LearnMVC.Areas.Admin.Controllers
                     email = model.Email,
                     password = model.Password,
                     phone = model.Phone,
-                    age = model.Age,
-                    date_of_birth = model.DateOfBirth,
+                    age = model.Age ?? 0,
+                    date_of_birth = model.DateOfBirth ?? DateOnly.MinValue,
                     gender = model.Gender,
-                    is_active = model.IsActive,
+                    is_active = model.IsActive ?? true,
                     hobbies = model.Hobbies,
                     course = model.Course,
                     skills = model.Skills,
@@ -83,16 +135,12 @@ namespace LearnMVC.Areas.Admin.Controllers
                 TempData["SuccessMessage"] = "Student created successfully.";
                 return RedirectToAction(nameof(Index));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
                 return RedirectToAction(nameof(Index));
             }
         }
 
-        public IActionResult Edit()
-        {
-            return View();
-        }
     }
 }

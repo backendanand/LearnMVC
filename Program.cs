@@ -16,6 +16,7 @@ builder.Services.AddScoped<IGenericRepository, GenericRepository>();
 
 SqlMapper.AddTypeHandler(new DateOnlyTypeHandler());
 SqlMapper.AddTypeHandler(new NullableDateOnlyTypeHandler());
+SqlMapper.AddTypeHandler(new StringArrayTypeHandler());
 
 builder.Services.AddScoped<IAuthContextService, AuthContextService>();
 
