@@ -132,20 +132,24 @@ namespace LearnMVC.Repositories
             return await connection.QueryFirstOrDefaultAsync<T>(sql, new { Id = id });
         }
 
-        public async Task<int> InsertAsync<T>(string table, T entity)
+        public async Task<long> InsertAsync<T>(string table, T entity)
         {
             using var connection = _context.CreateConnection();
 
-            var props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var props = typeof(T)
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.Name.ToLower() != "id");
 
             var columns = props.Select(p => p.Name);
             var values = props.Select(p => "@" + p.Name);
 
             var sql = $@"
             INSERT INTO {table} ({string.Join(",", columns)})
-            VALUES ({string.Join(",", values)})";
+            VALUES ({string.Join(",", values)})
+            RETURNING id;";
 
-            return await connection.ExecuteAsync(sql, entity);
+            var newId = await connection.ExecuteScalarAsync<long>(sql, entity);
+            return newId;
         }
 
         public async Task<int> UpdateAsync<T>(string table, string keyColumn, object id, T entity)

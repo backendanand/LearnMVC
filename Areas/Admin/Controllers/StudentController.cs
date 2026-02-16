@@ -78,7 +78,7 @@ namespace LearnMVC.Areas.Admin.Controllers
                     created_ip = HttpContext.Connection.RemoteIpAddress?.ToString()
                 };
 
-                await _genericRepository.InsertAsync("students", newStudent);
+                var newStudentId = await _genericRepository.InsertAsync("students", newStudent);
 
                 TempData["SuccessMessage"] = "Student created successfully.";
                 return RedirectToAction(nameof(Index));
