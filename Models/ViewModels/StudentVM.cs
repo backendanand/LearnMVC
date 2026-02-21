@@ -17,19 +17,23 @@ namespace LearnMVC.Models.ViewModels
 
     public class StudentCreateVM
     {
-        public long? Id { get; set; } = 0;
+        public long Id { get; set; } = 0;
 
-        [Required]
-        public string? FirstName { get; set; }
+        [Required(ErrorMessage = "First name is required")]
+        public string FirstName { get; set; }
 
         public string? MiddleName { get; set; }
 
-        public string? LastName { get; set; }
+        [Required(ErrorMessage = "Last name is required")]
+        public string LastName { get; set; }
 
+        [Required(ErrorMessage = "Email is required")]
         [EmailAddress]
-        public string? Email { get; set; }
+        public string Email { get; set; }
+
         [DataType(DataType.Password)]
         public string? Password { get; set; }
+
         [Phone]
         public string? Phone { get; set; }
         [Range(1, 100)]
@@ -37,7 +41,7 @@ namespace LearnMVC.Models.ViewModels
         [DataType(DataType.Date)]
         public DateOnly? DateOfBirth { get; set; }
         public string? Gender { get; set; }
-        public bool? IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
         public string[]? Hobbies { get; set; } = Array.Empty<string>();
         public string? Course { get; set; }
         public string[]? Skills { get; set; } = Array.Empty<string>();

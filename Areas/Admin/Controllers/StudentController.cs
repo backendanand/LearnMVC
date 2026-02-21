@@ -5,6 +5,7 @@ using LearnMVC.Models.ViewModels;
 using LearnMVC.Repositories;
 using LearnMVC.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace LearnMVC.Areas.Admin.Controllers
@@ -30,7 +31,7 @@ namespace LearnMVC.Areas.Admin.Controllers
             {
                 SelectColumns = new List<string> { "id", "first_name", "middle_name", "last_name", "email", "phone", "age", "course", "is_active" },
                 Table = "students",
-                Sorts = new List<QuerySort> { new () { Column = "created_at", Descending = true } }
+                Sorts = new List<QuerySort> { new() { Column = "created_at", Descending = true } }
             });
             return View(students);
         }
@@ -47,7 +48,7 @@ namespace LearnMVC.Areas.Admin.Controllers
         {
             try
             {
-                if(id <= 0)
+                if (id <= 0)
                 {
                     TempData["ErrorMessage"] = "Invalid student ID.";
                     return RedirectToAction(nameof(Index));
@@ -107,32 +108,68 @@ namespace LearnMVC.Areas.Admin.Controllers
                 }
 
                 var currentSession = _authContextService.GetSession();
-
-                var newStudent = new Student
+                if (model.Id > 0)
                 {
-                    first_name = model.FirstName,
-                    middle_name = model.MiddleName,
-                    last_name = model.LastName,
-                    email = model.Email,
-                    password = model.Password,
-                    phone = model.Phone,
-                    age = model.Age ?? 0,
-                    date_of_birth = model.DateOfBirth ?? DateOnly.MinValue,
-                    gender = model.Gender,
-                    is_active = model.IsActive ?? true,
-                    hobbies = model.Hobbies,
-                    course = model.Course,
-                    skills = model.Skills,
-                    address = model.Address,
-                    profile_image = model.ProfileImage.FileName,
-                    created_at = DateTime.Now,
-                    created_by = currentSession.UserId,
-                    created_ip = HttpContext.Connection.RemoteIpAddress?.ToString()
-                };
+                    var existingStudent = await _genericRepository.GetByIdAsync<Student>("students", "id", model.Id);
+                    if (existingStudent == null)
+                    {
+                        TempData["ErrorMessage"] = "Student not found.";
+                        return RedirectToAction(nameof(Index));
+                    }
 
-                var newStudentId = await _genericRepository.InsertAsync("students", newStudent);
+                    existingStudent.first_name = model.FirstName;
+                    existingStudent.middle_name = model.MiddleName;
+                    existingStudent.last_name = model.LastName;
+                    existingStudent.email = model.Email;
+                    existingStudent.phone = model.Phone;
+                    existingStudent.age = model.Age ?? 0;
+                    existingStudent.date_of_birth = model.DateOfBirth ?? DateOnly.MinValue;
+                    existingStudent.gender = model.Gender;
+                    existingStudent.is_active = model.IsActive;
+                    existingStudent.hobbies = model.Hobbies;
+                    existingStudent.course = model.Course;
+                    existingStudent.skills = model.Skills;
+                    existingStudent.address = model.Address;
+                    existingStudent.updated_at = DateTime.Now;
+                    existingStudent.updated_by = currentSession.UserId;
+                    existingStudent.updated_ip = HttpContext.Connection.RemoteIpAddress?.ToString();
 
-                TempData["SuccessMessage"] = "Student created successfully.";
+                    if (!string.IsNullOrEmpty(model.Password))
+                    {
+                        existingStudent.password = model.Password;
+                    }
+
+                    var newStudentId = await _genericRepository.UpdateAsync("students", "id", model.Id, existingStudent);
+                }
+                else
+                {
+                    // CREATE LOGIC
+                    var newStudent = new Student
+                    {
+                        first_name = model.FirstName,
+                        middle_name = model.MiddleName,
+                        last_name = model.LastName,
+                        email = model.Email,
+                        password = model.Password,
+                        phone = model.Phone,
+                        age = model.Age ?? 0,
+                        date_of_birth = model.DateOfBirth ?? DateOnly.MinValue,
+                        gender = model.Gender,
+                        is_active = model.IsActive,
+                        hobbies = model.Hobbies,
+                        course = model.Course,
+                        skills = model.Skills,
+                        address = model.Address,
+                        profile_image = model.ProfileImage.FileName,
+                        created_at = DateTime.Now,
+                        created_by = currentSession.UserId,
+                        created_ip = HttpContext.Connection.RemoteIpAddress?.ToString()
+                    };
+
+                    var newStudentId = await _genericRepository.InsertAsync("students", newStudent);
+                }
+
+                TempData["SuccessMessage"] = "Student saved successfully.";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)

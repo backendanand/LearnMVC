@@ -46,6 +46,7 @@
         <label asp-for="Password" class="form-label"></label>
         <input asp-for="Password" class="form-control" />
         <span asp-validation-for="Password" class="text-danger"></span>
+        <span class="text-sm text-danger">@(Model.Id > 0 ? "You can update your password, if required." : "")</span>
     </div>
 
     <!-- Phone -->
@@ -86,7 +87,7 @@
     <!-- Active Checkbox -->
     <div class="col-md-6">
         <div class="form-check mt-4">
-            <input asp-for="IsActive" class="form-check-input" />
+            <input type="checkbox" asp-for="IsActive" class="form-check-input" />
             <label asp-for="IsActive" class="form-check-label"></label>
         </div>
         <span asp-validation-for="IsActive" class="text-danger"></span>
